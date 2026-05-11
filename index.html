@@ -7,10 +7,11 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
         body { background-color: #f8f9fa; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
-        .cat-card { transition: transform 0.2s; border: none; border-radius: 15px; overflow: hidden; }
-        .cat-card:hover { transform: translateY(-5px); shadow: 0 10px 20px rgba(0,0,0,0.1); }
-        .card-img-top { height: 250px; object-fit: cover; }
+        .cat-card { transition: transform 0.2s; border: none; border-radius: 15px; overflow: hidden; height: 100%; }
+        .cat-card:hover { transform: translateY(-5px); box-shadow: 0 10px 20px rgba(0,0,0,0.1); }
+        .card-img-top { height: 250px; object-fit: cover; background-color: #eee; }
         .navbar { background-color: #ff6b6b !important; }
+        .btn-success { background-color: #28a745; border: none; }
     </style>
 </head>
 <body>
@@ -33,29 +34,36 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.0/papaparse.min.js"></script>
 
 <script>
-    // 🚩 แก้ไขตรงนี้: วางลิงก์ CSV ที่ได้จาก File > Share > Publish to web ของคุณ
-    const public_spreadsheet_url = https://docs.google.com/spreadsheets/d/e/2PACX-1vQBat1WTJunSt9WRbR_w0q4uNMC_txGtfw6SRv2XlkdXtHxcNZafPzc9LNSN8Rn5xPXI717FFddww89/pub?gid=1934718548&single=true&output=csv;
+    // ✅ แก้ไขแล้ว: ใส่เครื่องหมายคำพูดครอบลิงก์เรียบร้อย
+    const public_spreadsheet_url = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQBat1WTJunSt9WRbR_w0q4uNMC_txGtfw6SRv2XlkdXtHxcNZafPzc9LNSN8Rn5xPXI717FFddww89/pub?gid=1934718548&single=true&output=csv';
 
     function init() {
         Papa.parse(public_spreadsheet_url, {
             download: true,
             header: true,
-            complete: showInfo
+            complete: showInfo,
+            error: function(err) {
+                console.error("Error loading CSV:", err);
+                document.getElementById('display-area').innerHTML = '<div class="text-center w-100">เกิดข้อผิดพลาดในการโหลดลิงก์ CSV</div>';
+            }
         })
     }
 
     function showInfo(results) {
         const data = results.data;
         const container = document.getElementById('display-area');
-        container.innerHTML = ''; // ล้างตัวโหลดออก
+        container.innerHTML = ''; 
         
-        if (data.length === 0 || (data.length === 1 && !data[0]['ชื่อแมว'])) {
-            container.innerHTML = '<div class="text-center w-100">ยังไม่มีข้อมูลที่ได้รับอนุมัติในขณะนี้</div>';
+        // กรองแถวที่ไม่มีข้อมูลจริงออก
+        const validData = data.filter(row => row['ชื่อแมว'] && row['ชื่อแมว'].trim() !== "");
+
+        if (validData.length === 0) {
+            container.innerHTML = '<div class="text-center w-100 py-5"><h3>📢 ยังไม่มีข้อมูลที่ได้รับอนุมัติในขณะนี้</h3><p>เมื่อแอดมินกด "อนุมัติ" ในระบบ ข้อมูลจะปรากฏที่นี่</p></div>';
             return;
         }
 
-        data.forEach(row => {
-            // ดึงข้อมูลตามหัวข้อคอลัมน์ของคุณเป๊ะๆ
+        validData.forEach(row => {
+            // ดึงข้อมูลจากคอลัมน์ใน Google Sheets
             const imgUrl = row['ลิงก์รูปเว็บ'] || ''; 
             const catName = row['ชื่อแมว'] || 'ไม่ระบุชื่อ';
             const breed = row['สายพันธุ์'] || 'ไม่ระบุ';
@@ -65,8 +73,8 @@
 
             const card = `
                 <div class="col">
-                    <div class="card h-100 shadow-sm cat-card">
-                        <img src="${imgUrl}" class="card-img-top" alt="รูปแมว" onerror="this.src='https://via.placeholder.com/400x300?text=กำลังรอรูปภาพ...'">
+                    <div class="card shadow-sm cat-card">
+                        <img src="${imgUrl}" class="card-img-top" alt="รูปแมว" onerror="this.src='https://via.placeholder.com/400x300?text=กำลังรอรูปภาพจากระบบ...'">
                         <div class="card-body">
                             <h5 class="card-title text-danger"><b>${catName}</b></h5>
                             <hr>
