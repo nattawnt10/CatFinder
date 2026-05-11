@@ -64,7 +64,7 @@
 
         validData.forEach(row => {
             // ดึงข้อมูลจากคอลัมน์ใน Google Sheets
-            const imgUrl = row['ลิงก์รูปเว็บ'] || ''; 
+            const imgUrl = row['web_img_url'] || ''; 
             const catName = row['ชื่อแมว'] || 'ไม่ระบุชื่อ';
             const breed = row['สายพันธุ์'] || 'ไม่ระบุ';
             const feature = row['ลักษณะเด่น'] || '-';
