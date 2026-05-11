@@ -81,7 +81,7 @@
         data.forEach((row, index) => {
             const type = row['ประเภท'] || 'ไม่ระบุ';
             const badgeClass = type === 'แมวหาย' ? 'bg-danger' : 'bg-primary';
-            const mainImg = row['web_img_url'] || 'https://via.placeholder.com/400x300?text=รอรูปภาพ...';
+            const mainImg = row[' ลิงค์รูปภาพที่ 1'] || 'https://via.placeholder.com/400x300?text=รอรูปภาพ...';
             
             const card = `
                 <div class="col">
