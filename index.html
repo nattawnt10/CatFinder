@@ -119,7 +119,7 @@
 
         // ตรวจจับรูปภาพ 1-4 จากชื่อหัวข้อแถวที่ 1
         let images = [];
-        ['web_img_url', 'web_img_url_2', 'web_img_url_3', 'web_img_url_4'].forEach(key => {
+        ['ลิงค์รูปภาพที่ 1', 'ลิงค์รูปภาพที่ 2', 'ลิงค์รูปภาพที่ 3', 'ลิงค์รูปภาพที่ 4'].forEach(key => {
             if (row[key] && row[key].trim().startsWith('http')) {
                 images.push(row[key].trim());
             }
