@@ -97,7 +97,7 @@
 <script>
     let allCatData = [];
     let currentTypeFilter = 'ทั้งหมด';
-    const csv_url = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQBat1WTJunSt9WRbR_w0q4uNMC_txGtfw6SRv2XlkdXtHxcNZafPzc9LNSN8Rn5xPXI717FFddww89/pub?gid=1934718548&single=true&output=csv';
+    const csv_url = 'https://docs.google.com/forms/d/e/1FAIpQLSfFT6EzdOULOLvGR8VZh0Xm9P78Ys_bJi9_MN1lYfZGGPBlRA/viewform;
 
     function init() {
         Papa.parse(csv_url, {
@@ -191,7 +191,7 @@
                     <p><b>พิกัด:</b> ${getSafeValue(row, ['สถานที่'])}</p>
                     <div class="bg-light p-3 rounded mb-3" style="font-size:0.9rem;">${getSafeValue(row, ['รายละเอียด'])}</div>
                     <a href="tel:${getSafeValue(row, ['เบอร์ติดต่อ'])}" class="btn-call">📞 โทรหาเจ้าของ</a>
-                    <a href="${getSafeValue(row, ['Facebook'])}" target="_blank" class="btn-fb">🔵 ดูโพสต์ Facebook</a>
+                    <a href="${getSafeValue(row, ['Facebook'])}" target="_blank" class="btn-fb">🔵 Facebook</a>
                 </div>
             </div>`;
         new bootstrap.Modal(document.getElementById('catDetailModal')).show();
