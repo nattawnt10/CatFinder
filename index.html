@@ -75,7 +75,6 @@
             border-color: var(--primary-color);
         }
 
-        /* ปุ่มแจ้งข้อมูลสีเขียว */
         .btn-report {
             background-color: var(--success-green);
             color: white;
@@ -118,7 +117,6 @@
             object-fit: cover; 
         }
         
-        /* ปรับปรุงป้ายสินน้ำใจตามสั่ง: เล็กลง ตัดภาษาอังกฤษ */
         .reward-tag { 
             position: absolute; 
             top: 10px; 
@@ -194,10 +192,9 @@
 
 <div class="container text-center filter-section">
     <div class="d-flex flex-wrap justify-content-center gap-2 mb-3">
-        <button class="btn btn-filter active" onclick="filterType('ทั้งหมด', this)">ทั้งหมด</button>
+        <button class="btn btn-filter active" id="btn-all" onclick="filterType('ทั้งหมด', this)">ทั้งหมด</button>
         <button class="btn btn-filter" onclick="filterType('แมวหาย', this)">🚨 แมวหาย</button>
         <button class="btn btn-filter" onclick="filterType('แมวหลง', this)">🏠 แมวหลง</button>
-        <!-- ปุ่มแจ้งข้อมูลเอากลับมาแล้ว -->
         <a href="ใส่ลิงก์แบบฟอร์มของคุณตรงนี้" class="btn btn-report">➕ แจ้งข้อมูล</a>
     </div>
     
@@ -237,7 +234,8 @@
 
 <script>
     let allCatData = [];
-    let currentType = 'ทั้งหมด';
+    let currentTypeFilter = 'ทั้งหมด'; // ตัวแปรเก็บค่าประเภทที่เลือก
+
     const csv_url = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQBat1WTJunSt9WRbR_w0q4uNMC_txGtfw6SRv2XlkdXtHxcNZafPzc9LNSN8Rn5xPXI717FFddww89/pub?gid=1934718548&single=true&output=csv';
 
     function fixImageUrl(url) {
@@ -258,19 +256,22 @@
         Papa.parse(csv_url, {
             download: true, header: true,
             complete: function(results) {
-                allCatData = results.data.filter(row => getSafeValue(row, ['ชื่อแมว', 'ประเภท']));
+                // เก็บข้อมูลและดักจับแถวที่ว่าง
+                allCatData = results.data.filter(row => getSafeValue(row, ['ชื่อแมว']) !== '');
                 displayCats(allCatData);
             }
         });
     }
 
+    // ฟังก์ชันเปลี่ยนปุ่ม Active และเก็บค่า Filter ประเภท
     function filterType(type, btn) {
         document.querySelectorAll('.btn-filter').forEach(b => b.classList.remove('active'));
         btn.classList.add('active');
-        currentType = type;
-        combinedFilter();
+        currentTypeFilter = type;
+        combinedFilter(); // เรียกใช้ฟังก์ชันรวมเพื่อให้ Filter ทำงานร่วมกัน
     }
 
+    // ฟังก์ชันค้นหารวม (Search + Type + Gender + Color)
     function combinedFilter() {
         const searchInput = document.getElementById('cat-search').value.toLowerCase().trim();
         const genderVal = document.getElementById('filter-gender').value;
@@ -281,26 +282,40 @@
             const rowGender = getSafeValue(row, ['เพศ']);
             const rowColor = getSafeValue(row, ['สี']);
             const rowName = getSafeValue(row, ['ชื่อแมว']).toLowerCase();
-            const rowLoc = getSafeValue(row, ['สถานที่', 'พิกัด']).toLowerCase();
+            const rowLoc = getSafeValue(row, ['สถานที่', 'พิกัด', 'จังหวัด']).toLowerCase();
+            const rowDetail = getSafeValue(row, ['รายละเอียด']).toLowerCase();
 
-            const matchType = (currentType === 'ทั้งหมด' || rowType === currentType);
+            // ตรวจสอบเงื่อนไขแต่ละข้อ
+            const matchType = (currentTypeFilter === 'ทั้งหมด' || rowType === currentTypeFilter);
             const matchGender = (genderVal === 'ทั้งหมด' || rowGender === genderVal);
             const matchColor = (colorVal === 'ทั้งหมด' || rowColor.includes(colorVal));
-            const matchSearch = rowName.includes(searchInput) || rowLoc.includes(searchInput);
+            
+            // ตรวจสอบช่อง Search (หาจาก ชื่อ, พิกัด, สี, หรือรายละเอียด)
+            const matchSearch = searchInput === "" || 
+                                rowName.includes(searchInput) || 
+                                rowLoc.includes(searchInput) || 
+                                rowColor.toLowerCase().includes(searchInput) ||
+                                rowDetail.includes(searchInput);
 
             return matchType && matchGender && matchColor && matchSearch;
         });
+
         displayCats(filtered);
     }
 
     function displayCats(data) {
         const container = document.getElementById('display-area');
         container.innerHTML = '';
+        
+        if (data.length === 0) {
+            container.innerHTML = '<div class="col-12 text-center py-5 text-muted"><h3>ไม่พบข้อมูลที่ค้นหา</h3></div>';
+            return;
+        }
+
         data.forEach((row) => {
             const type = getSafeValue(row, ['ประเภท']);
             const img = fixImageUrl(getSafeValue(row, ['รูปภาพที่ 1', 'รูปภาพ 1']));
             const reward = getSafeValue(row, ['สินน้ำใจ', 'รางวัล']);
-            // แก้ไขป้ายสินน้ำใจ: ตัดภาษาอังกฤษออก
             const rewardHtml = (reward && reward !== '0' && reward !== '-') ? `<div class="reward-tag">฿${reward}</div>` : '';
 
             container.innerHTML += `
