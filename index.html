@@ -15,70 +15,68 @@
             box-shadow: 0 10px 30px rgba(44, 62, 80, 0.2); 
         }
 
-        .search-container { max-width: 600px; margin: -30px auto 30px; position: relative; z-index: 100; }
+        .search-container { max-width: 700px; margin: -30px auto 30px; position: relative; z-index: 100; }
         .search-input { 
             border-radius: 50px; 
             padding: 15px 25px 15px 50px; 
-            border: none; 
-            box-shadow: 0 5px 15px rgba(0,0,0,0.1); 
+            border: 2px solid transparent;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1); 
             font-size: 1.1rem;
             background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="gray" class="bi bi-search" viewBox="0 0 16 16"><path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z"/></svg>');
             background-repeat: no-repeat;
             background-position: 20px center;
+            transition: all 0.3s;
         }
+        .search-input:focus { border-color: #4ca1af; outline: none; transform: scale(1.02); }
 
-        .cat-card { transition: transform 0.2s; border: none; border-radius: 15px; overflow: hidden; height: 100%; cursor: pointer; box-shadow: 0 4px 10px rgba(0,0,0,0.05); background: white; }
-        .cat-card:hover { transform: translateY(-5px); box-shadow: 0 10px 20px rgba(0,0,0,0.1); }
-        .card-img-top { height: 280px; object-fit: cover; background-color: #eee; }
+        .cat-card { transition: transform 0.2s; border: none; border-radius: 15px; overflow: hidden; height: 100%; cursor: pointer; box-shadow: 0 4px 10px rgba(0,0,0,0.05); background: white; position: relative; }
+        .cat-card:hover { transform: translateY(-8px); box-shadow: 0 15px 30px rgba(0,0,0,0.1); }
+        .card-img-top { height: 250px; object-fit: cover; background-color: #eee; }
         
         .btn-pill { border-radius: 50px; padding: 8px 25px; font-weight: 600; transition: all 0.3s; border: 1px solid #dee2e6; background: white; color: #666; }
         .btn-pill.active { background-color: #2c3e50 !important; color: white !important; border-color: #2c3e50 !important; }
         
-        .btn-report-main { background-color: #28a745; color: white !important; border-radius: 50px; padding: 10px 25px; font-weight: bold; text-decoration: none; box-shadow: 0 4px 12px rgba(40, 167, 69, 0.2); }
+        .btn-report-main { background-color: #28a745; color: white !important; border-radius: 50px; padding: 12px 30px; font-weight: bold; text-decoration: none; box-shadow: 0 4px 12px rgba(40, 167, 69, 0.3); }
 
-        .select-pill { border-radius: 50px; padding: 8px 15px; border: 1px solid #dee2e6; font-size: 0.9rem; min-width: 160px; }
+        .select-pill { border-radius: 50px; padding: 8px 20px; border: 1px solid #dee2e6; cursor: pointer; }
 
-        .badge-type { position: absolute; top: 10px; right: 10px; padding: 8px 15px; border-radius: 20px; font-size: 0.8rem; z-index: 10; color: white; font-weight: bold; }
-        .modal-carousel-img { height: 450px; object-fit: contain; background-color: #000; width: 100%; }
-        .text-truncate-multi { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
-        .highlight-text { color: #ffce00; font-weight: bold; }
+        .badge-type { position: absolute; top: 15px; right: 15px; padding: 8px 15px; border-radius: 20px; font-size: 0.85rem; z-index: 10; color: white; font-weight: bold; box-shadow: 0 4px 8px rgba(0,0,0,0.2); }
+        .text-truncate-multi { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; color: #666; font-size: 0.9rem; }
     </style>
 </head>
 <body>
 
 <header class="py-5 text-center text-white mb-5">
-    <div class="container px-4 pb-4">
+    <div class="container px-4">
         <h1 class="display-5 fw-bold mb-3">🐱 ศูนย์แจ้งแมวหาย-แมวหลง</h1>
-        <p class="lead mb-4 fw-light mx-auto" style="max-width: 850px;">"สังคมที่น่าอยู่เริ่มต้นที่การไม่นิ่งเฉยต่อชีวิตเล็กๆ ทุกการส่งต่อคือ <span class="highlight-text">โอกาสรอด</span>"</p>
+        <p class="lead mb-0 opacity-75">ค้นหาและช่วยเหลือเพื่อนสี่ขาให้กลับบ้าน</p>
     </div>
 </header>
 
 <div class="container search-container">
-    <input type="text" id="cat-search" class="form-control search-input" placeholder="พิมพ์เพื่อค้นหา... (ชื่อ, สี, พิกัด)" onkeyup="combinedFilter()">
+    <input type="text" id="cat-search" class="form-control search-input" placeholder="ค้นหาอะไรก็ได้... (เช่น ส้ม ตัวเมีย หายลาดพร้าว)" onkeyup="combinedFilter()">
 </div>
 
-<div class="container mb-4">
+<div class="container mb-5">
     <div class="d-flex flex-wrap justify-content-center align-items-center gap-3 mb-4">
         <div class="d-flex gap-2 p-1 bg-white shadow-sm rounded-pill border">
-            <button class="btn btn-pill active" onclick="filterCats('ทั้งหมด', this)">ทั้งหมด</button>
-            <button class="btn btn-pill" onclick="filterCats('แมวหาย', this)">🚨 แมวหาย</button>
-            <button class="btn btn-pill" onclick="filterCats('แมวหลง', this)">🏠 แมวหลง</button>
+            <button class="btn btn-pill active" onclick="filterType('ทั้งหมด', this)">ทั้งหมด</button>
+            <button class="btn btn-pill" onclick="filterType('แมวหาย', this)">🚨 แมวหาย</button>
+            <button class="btn btn-pill" onclick="filterType('แมวหลง', this)">🏠 แมวหลง</button>
         </div>
-        <a href="https://docs.google.com/forms/d/e/1FAIpQLSfFT6EzdOULOLvGR8VZh0Xm9P78Ys_bJi9_MN1lYfZGGPBlRA/viewform?usp=dialog" target="_blank" class="btn btn-report-main">➕ แจ้งข้อมูล</a>
+        <a href="URL_GOOGLE_FORM_ของคุณ" target="_blank" class="btn btn-report-main">➕ แจ้งข้อมูลใหม่</a>
     </div>
 
-    <div class="d-flex flex-wrap justify-content-center gap-3">
-        <div class="text-center">
-            <label class="small fw-bold text-muted d-block mb-1">👫 เพศ</label>
-            <select class="form-select select-pill" id="filter-gender" onchange="combinedFilter()">
-                <option value="ทั้งหมด">ทั้งหมด</option>
+    <div class="row g-3 justify-content-center">
+        <div class="col-6 col-md-auto">
+            <select class="form-select select-pill shadow-sm" id="filter-gender" onchange="combinedFilter()">
+                <option value="ทั้งหมด">เพศทั้งหมด</option>
                 <option value="ผู้">เพศผู้</option>
                 <option value="เมีย">เพศเมีย</option>
             </select>
         </div>
-        <div class="text-center">
-            <label class="small fw-bold text-muted d-block mb-1">🎨 สี</label>
-            <select class="form-select select-pill" id="filter-color" onchange="combinedFilter()">
+        <div class="col-6 col-md-auto">
+            <select class="form-select select-pill shadow-sm" id="filter-color" onchange="combinedFilter()">
                 <option value="ทั้งหมด">สีทั้งหมด</option>
                 <option value="ขาว">สีขาว</option>
                 <option value="ดำ">สีดำ</option>
@@ -93,13 +91,14 @@
 
 <div class="container">
     <div id="display-area" class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4 pb-5">
-        <div class="text-center w-100 py-5"><p>กำลังโหลดข้อมูล...</p></div>
+        <!-- รายการแมวจะมาโผล่ตรงนี้ -->
     </div>
 </div>
 
+<!-- Modal -->
 <div class="modal fade" id="catDetailModal" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-lg">
-        <div class="modal-content" style="border-radius: 20px; overflow:hidden;">
+        <div class="modal-content" style="border-radius: 25px; border:none; overflow:hidden;">
             <div id="modal-content-area"></div>
         </div>
     </div>
@@ -110,20 +109,22 @@
 
 <script>
     let allCatData = []; 
-    let currentType = 'ทั้งหมด';
+    let currentTypeFilter = 'ทั้งหมด';
     const public_url = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQBat1WTJunSt9WRbR_w0q4uNMC_txGtfw6SRv2XlkdXtHxcNZafPzc9LNSN8Rn5xPXI717FFddww89/pub?gid=1934718548&single=true&output=csv';
 
     function fixImageUrl(url) {
         if (!url) return '';
         if (url.includes('drive.google.com')) {
-            return url.replace('/file/d/', '/uc?export=view&id=').split('/view')[0];
+            const id = url.split('id=')[1] || url.split('/d/')[1].split('/')[0];
+            return `https://docs.google.com/uc?export=view&id=${id}`;
         }
         return url;
     }
 
-    function getValue(row, keywords) {
-        const key = Object.keys(row).find(k => keywords.some(kw => k.trim().includes(kw)));
-        return key ? row[key].toString().trim() : '';
+    // ฟังก์ชันดึงค่าจาก Column แบบยืดหยุ่น (ป้องกันชื่อคอลัมน์ในชีทคลาดเคลื่อน)
+    function getSafeValue(row, keys) {
+        const foundKey = Object.keys(row).find(k => keys.some(key => k.toLowerCase().includes(key.toLowerCase())));
+        return foundKey ? row[foundKey].toString().trim() : '';
     }
 
     function init() {
@@ -131,90 +132,117 @@
             download: true,
             header: true,
             complete: function(results) {
-                allCatData = results.data.filter(row => getValue(row, ['ชื่อแมว']));
+                allCatData = results.data.filter(row => getSafeValue(row, ['ชื่อแมว', 'หัวข้อ']));
                 displayCats(allCatData);
             }
         });
     }
 
-    function filterCats(type, btn) {
+    function filterType(type, btn) {
         document.querySelectorAll('.btn-pill').forEach(b => b.classList.remove('active'));
         btn.classList.add('active');
-        currentType = type;
+        currentTypeFilter = type;
         combinedFilter();
     }
 
     function combinedFilter() {
-        const genderFilter = document.getElementById('filter-gender').value;
-        const colorFilter = document.getElementById('filter-color').value;
-        const searchText = document.getElementById('cat-search').value.toLowerCase().trim();
+        const genderVal = document.getElementById('filter-gender').value;
+        const colorVal = document.getElementById('filter-color').value;
+        const searchInput = document.getElementById('cat-search').value.toLowerCase().trim();
+        const searchTerms = searchInput.split(' ').filter(t => t !== ''); // แยกคำค้นหาด้วยช่องว่าง
 
-        const filteredData = allCatData.filter(row => {
-            const type = getValue(row, ['ประเภท']);
-            const gender = getValue(row, ['เพศ']);
-            const color = getValue(row, ['สี']);
-            const name = getValue(row, ['ชื่อแมว']).toLowerCase();
-            const loc = (getValue(row, ['สถานที่พบ/หาย']) || getValue(row, ['พิกัด'])).toLowerCase();
-            const desc = getValue(row, ['รายละเอียด']).toLowerCase();
+        const filtered = allCatData.filter(row => {
+            const rowType = getSafeValue(row, ['ประเภท']);
+            const rowGender = getSafeValue(row, ['เพศ']);
+            const rowColor = getSafeValue(row, ['สี']);
+            const rowName = getSafeValue(row, ['ชื่อแมว']).toLowerCase();
+            const rowLoc = getSafeValue(row, ['สถานที่', 'พิกัด']).toLowerCase();
+            const rowDesc = getSafeValue(row, ['รายละเอียด']).toLowerCase();
 
-            const matchType = (currentType === 'ทั้งหมด' || type === currentType);
-            const matchGender = (genderFilter === 'ทั้งหมด' || gender === genderFilter);
+            // 1. กรองประเภท (หาย/หลง)
+            const matchType = (currentTypeFilter === 'ทั้งหมด' || rowType === currentTypeFilter);
             
-            // ปรับปรุงการเช็คสี: ให้ครอบคลุมมากขึ้น เช่น "ส้ม" จะเจอ "สีส้ม" หรือ "ส้มขาว"
-            const matchColor = (colorFilter === 'ทั้งหมด' || color.includes(colorFilter));
+            // 2. กรองเพศ
+            const matchGender = (genderVal === 'ทั้งหมด' || rowGender === genderVal);
             
-            const matchSearch = !searchText || (name.includes(searchText) || loc.includes(searchText) || desc.includes(searchText) || color.toLowerCase().includes(searchText));
+            // 3. กรองสี (ใช้ includes เพื่อให้ "ส้ม" เจอใน "ส้มขาว")
+            const matchColor = (colorVal === 'ทั้งหมด' || rowColor.includes(colorVal));
+
+            // 4. ระบบค้นหาอัจฉริยะ (ต้องเจอทุกคำที่พิมพ์ลงไป)
+            const fullText = `${rowName} ${rowLoc} ${rowDesc} ${rowColor} ${rowType} ${rowGender}`.toLowerCase();
+            const matchSearch = searchTerms.every(term => fullText.includes(term));
 
             return matchType && matchGender && matchColor && matchSearch;
         });
 
-        displayCats(filteredData);
+        displayCats(filtered);
     }
 
     function displayCats(data) {
         const container = document.getElementById('display-area');
-        container.innerHTML = data.length ? '' : '<div class="text-center w-100 py-5"><h4>ไม่พบข้อมูล</h4></div>';
+        container.innerHTML = '';
+
+        if (data.length === 0) {
+            container.innerHTML = `
+                <div class="col-12 text-center py-5">
+                    <img src="https://cdn-icons-png.flaticon.com/512/6134/6134065.png" width="100" class="opacity-25 mb-3">
+                    <h5 class="text-muted">ไม่พบข้อมูลที่ตรงกับเงื่อนไข ลองค้นหาด้วยคำอื่นดูนะครับ</h5>
+                </div>`;
+            return;
+        }
 
         data.forEach((row) => {
-            const type = getValue(row, ['ประเภท']);
-            const mainImg = fixImageUrl(getValue(row, ['รูปภาพที่ 1', 'รูปภาพ 1']));
+            const type = getSafeValue(row, ['ประเภท']);
+            const img = fixImageUrl(getSafeValue(row, ['รูปภาพที่ 1', 'รูปภาพ 1']));
+            
             container.innerHTML += `
                 <div class="col">
-                    <div class="card cat-card shadow-sm" onclick="showFullDetail(${allCatData.indexOf(row)})">
+                    <div class="card cat-card shadow-sm" onclick="showDetail(${allCatData.indexOf(row)})">
                         <span class="badge badge-type ${type === 'แมวหาย' ? 'bg-danger' : 'bg-primary'}">${type}</span>
-                        <img src="${mainImg || 'https://via.placeholder.com/400x300?text=ไม่มีรูป'}" class="card-img-top">
+                        <img src="${img || 'https://via.placeholder.com/400x300?text=No+Image'}" class="card-img-top">
                         <div class="card-body">
-                            <h5 class="card-title fw-bold">${getValue(row, ['ชื่อแมว'])}</h5>
-                            <p class="small mb-1 text-muted">📍 ${getValue(row, ['สถานที่พบ/หาย', 'พิกัด'])}</p>
-                            <p class="small mb-0 text-muted">🎨 สี: ${getValue(row, ['สี'])}</p>
+                            <h5 class="card-title fw-bold mb-2">${getSafeValue(row, ['ชื่อแมว'])}</h5>
+                            <p class="mb-1 small"><b>📍 พิกัด:</b> ${getSafeValue(row, ['สถานที่', 'พิกัด'])}</p>
+                            <p class="mb-2 small"><b>🎨 สี:</b> ${getSafeValue(row, ['สี'])}</p>
+                            <p class="text-truncate-multi">${getSafeValue(row, ['รายละเอียด'])}</p>
                         </div>
                     </div>
                 </div>`;
         });
     }
 
-    function showFullDetail(index) {
+    function showDetail(index) {
         const row = allCatData[index];
         const modalArea = document.getElementById('modal-content-area');
-        let imgs = [];
-        [1,2,3,4].forEach(i => {
-            let img = fixImageUrl(getValue(row, [`รูปภาพที่ ${i}`, `รูปภาพ ${i}`]));
-            if (img) imgs.push(img);
-        });
+        const img = fixImageUrl(getSafeValue(row, ['รูปภาพที่ 1', 'รูปภาพ 1']));
 
         modalArea.innerHTML = `
             <div class="row g-0">
                 <div class="col-lg-6">
-                    <img src="${imgs[0] || 'https://via.placeholder.com/400x300'}" class="w-100 h-100" style="object-fit:cover; min-height:400px;">
+                    <img src="${img || 'https://via.placeholder.com/400x300'}" class="w-100 h-100" style="object-fit:cover; min-height:400px;">
                 </div>
-                <div class="col-lg-6 p-4">
-                    <h3>${getValue(row, ['ชื่อแมว'])}</h3>
-                    <hr>
-                    <p><b>เพศ:</b> ${getValue(row, ['เพศ'])} | <b>สี:</b> ${getValue(row, ['สี'])}</p>
-                    <p><b>พิกัด:</b> ${getValue(row, ['สถานที่พบ/หาย', 'พิกัด'])}</p>
-                    <p><b>รายละเอียด:</b> ${getValue(row, ['รายละเอียด'])}</p>
-                    <div class="mt-4">
-                        <a href="tel:${getValue(row, ['เบอร์ติดต่อ'])}" class="btn btn-success w-100 mb-2">📞 โทร: ${getValue(row, ['เบอร์ติดต่อ'])}</a>
+                <div class="col-lg-6 p-4 bg-white">
+                    <div class="d-flex justify-content-between align-items-start mb-3">
+                        <h2 class="fw-bold mb-0">${getSafeValue(row, ['ชื่อแมว'])}</h2>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+                    <span class="badge ${getSafeValue(row, ['ประเภท']) === 'แมวหาย' ? 'bg-danger' : 'bg-primary'} mb-3 p-2 px-3 rounded-pill">
+                        ${getSafeValue(row, ['ประเภท'])}
+                    </span>
+                    <div class="mb-4">
+                        <p class="mb-1"><b>👫 เพศ:</b> ${getSafeValue(row, ['เพศ'])}</p>
+                        <p class="mb-1"><b>🎨 สี:</b> ${getSafeValue(row, ['สี'])}</p>
+                        <p class="mb-1"><b>📍 สถานที่:</b> ${getSafeValue(row, ['สถานที่', 'พิกัด'])}</p>
+                        <p class="mb-1"><b>📅 วันที่แจ้ง:</b> ${getSafeValue(row, ['Timestamp', 'วัน'])}</p>
+                    </div>
+                    <div class="p-3 bg-light rounded-3 mb-4">
+                        <p class="fw-bold mb-1">📝 รายละเอียดเพิ่มเติม:</p>
+                        <p class="mb-0 small">${getSafeValue(row, ['รายละเอียด'])}</p>
+                    </div>
+                    <div class="d-grid">
+                        <a href="tel:${getSafeValue(row, ['เบอร์ติดต่อ', 'โทร'])}" class="btn btn-success btn-lg fw-bold rounded-pill shadow-sm">
+                            📞 ติดต่อ: ${getSafeValue(row, ['เบอร์ติดต่อ', 'โทร'])}
+                        </a>
                     </div>
                 </div>
             </div>`;
