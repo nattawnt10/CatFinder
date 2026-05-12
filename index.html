@@ -24,8 +24,6 @@
             background-color: #f0f2f5; 
             font-family: 'Sarabun', sans-serif; 
             color: #333;
-            /* ป้องกันอาการจอกระตุกเวลาเปิด Modal */
-            padding-right: 0 !important; 
         }
         
         header { 
@@ -123,23 +121,29 @@
             z-index: 10; color: white; font-weight: bold;
         }
 
-        /* แก้ไข Modal ให้เลื่อนลงได้บนมือถือ */
-        .modal {
-            overflow-y: auto !important;
+        /* --- แก้ไขส่วน Modal ให้เลื่อนได้แน่นอน 100% --- */
+        .modal-dialog {
+            max-width: 900px;
         }
         .modal-content {
             border: none;
-            border-radius: 30px;
+            border-radius: 25px;
             overflow: hidden;
-            height: auto;
+            background-color: white;
         }
+        /* ลบ height บังคับออกเพื่อให้เนื้อหาไหลลงล่างได้ */
+        .modal-body {
+            padding: 0;
+            overflow-y: visible !important;
+        }
+        
         .carousel-item img {
             height: 450px;
             object-fit: cover;
+            width: 100%;
         }
         .detail-body {
             padding: 30px;
-            background: white;
         }
         .reward-highlight {
             background: #fff9e6;
@@ -152,20 +156,14 @@
             text-align: center;
         }
 
-        .btn-call { background-color: var(--success-green); color: white !important; border-radius: 50px; padding: 12px; font-weight: bold; }
-        .btn-fb { background-color: var(--fb-blue); color: white !important; border-radius: 50px; padding: 12px; font-weight: bold; }
+        .btn-call { background-color: var(--success-green); color: white !important; border-radius: 50px; padding: 12px; font-weight: bold; text-align: center; text-decoration: none; display: block; }
+        .btn-fb { background-color: var(--fb-blue); color: white !important; border-radius: 50px; padding: 12px; font-weight: bold; text-align: center; text-decoration: none; display: block; }
 
         @media (max-width: 768px) {
-            .carousel-item img { height: 320px; }
+            .carousel-item img { height: 300px; }
             .card-img-container { height: 160px; }
             .detail-body { padding: 20px; }
-            /* บังคับให้ Modal สกロールได้ในตัวเมื่อจอเล็ก */
-            .modal-dialog {
-                margin: 10px;
-                display: flex;
-                align-items: center;
-                min-height: calc(100% - 20px);
-            }
+            .modal-dialog { margin: 10px; }
         }
     </style>
 </head>
@@ -214,11 +212,13 @@
     <div id="display-area" class="row row-cols-2 row-cols-md-3 row-cols-lg-4 g-3"></div>
 </div>
 
-<!-- Modal - เพิ่ม class modal-dialog-scrollable เพื่อให้เลื่อนดูเนื้อหาได้ -->
+<!-- Modal - ใช้ modal-dialog-scrollable เพื่อให้เลื่อนได้ธรรมชาติ -->
 <div class="modal fade" id="catDetailModal" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable">
         <div class="modal-content shadow-lg">
-            <div id="modal-content-area"></div>
+            <div class="modal-body" id="modal-content-area">
+                <!-- เนื้อหาจะถูกฉีดเข้าที่นี่ -->
+            </div>
         </div>
     </div>
 </div>
@@ -294,6 +294,7 @@
             return;
         }
         data.forEach((row) => {
+            const index = allCatData.indexOf(row);
             const type = getSafeValue(row, ['ประเภท']);
             const img = fixImageUrl(getSafeValue(row, ['รูปภาพที่ 1', 'รูปภาพ 1']));
             const reward = getSafeValue(row, ['สินน้ำใจ', 'รางวัล']);
@@ -301,7 +302,7 @@
 
             container.innerHTML += `
                 <div class="col">
-                    <div class="cat-card" onclick="showDetail(${allCatData.indexOf(row)})">
+                    <div class="cat-card" onclick="showDetail(${index})">
                         ${rewardHtml}
                         <span class="status-badge ${type === 'แมวหาย' ? 'bg-danger' : 'bg-primary'}">${type}</span>
                         <div class="card-img-container"><img src="${img || 'https://via.placeholder.com/400'}" class="card-img-top"></div>
@@ -323,38 +324,55 @@
             fixImageUrl(getSafeValue(row, ['รูปภาพที่ 3', 'รูปภาพ 3']))
         ].filter(url => url !== '');
 
-        let carouselItems = images.map((img, i) => `<div class="carousel-item ${i === 0 ? 'active' : ''}"><img src="${img}" class="d-block w-100"></div>`).join('');
+        let carouselItems = images.map((img, i) => `<div class="carousel-item ${i === 0 ? 'active' : ''}"><img src="${img}"></div>`).join('');
         const reward = getSafeValue(row, ['สินน้ำใจ', 'รางวัล']);
         const fbLink = getSafeValue(row, ['Facebook', 'ลิงก์', 'เฟส']);
 
+        // ปรับแก้โครงสร้าง HTML ใน Modal เพื่อให้ Scroll ลื่นไหล
         modalArea.innerHTML = `
-            <div class="row g-0">
-                <div class="col-lg-7 bg-black d-flex align-items-center">
-                    <div id="catCarousel" class="carousel slide w-100" data-bs-ride="carousel">
-                        <div class="carousel-inner">${carouselItems}</div>
-                        ${images.length > 1 ? `<button class="carousel-control-prev" type="button" data-bs-target="#catCarousel" data-bs-slide="prev"><span class="carousel-control-prev-icon"></span></button><button class="carousel-control-next" type="button" data-bs-target="#catCarousel" data-bs-slide="next"><span class="carousel-control-next-icon"></span></button>` : ''}
+            <div class="container-fluid p-0">
+                <div class="row g-0">
+                    <div class="col-lg-7 bg-dark d-flex align-items-center justify-content-center" style="min-height: 300px;">
+                        <div id="catCarousel" class="carousel slide w-100" data-bs-ride="carousel">
+                            <div class="carousel-inner">${carouselItems}</div>
+                            ${images.length > 1 ? `
+                            <button class="carousel-control-prev" type="button" data-bs-target="#catCarousel" data-bs-slide="prev"><span class="carousel-control-prev-icon"></span></button>
+                            <button class="carousel-control-next" type="button" data-bs-target="#catCarousel" data-bs-slide="next"><span class="carousel-control-next-icon"></span></button>
+                            ` : ''}
+                        </div>
                     </div>
-                </div>
-                <div class="col-lg-5">
-                    <div class="detail-body">
-                        <div class="d-flex justify-content-between align-items-start mb-3">
-                            <div><h2 class="fw-bold mb-0">${getSafeValue(row, ['ชื่อแมว'])}</h2><span class="badge ${getSafeValue(row, ['ประเภท']) === 'แมวหาย' ? 'bg-danger' : 'bg-primary'} rounded-pill mt-2">${getSafeValue(row, ['ประเภท'])}</span></div>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                        </div>
-                        ${reward && reward !== '0' && reward !== '-' ? `<div class="reward-highlight">💰 สินน้ำใจตอบแทน: ฿${reward} บาท</div>` : ''}
-                        <div class="mb-4 small">
-                            <p class="mb-2"><strong>👫 เพศ:</strong> ${getSafeValue(row, ['เพศ'])} | <strong>🎨 สี:</strong> ${getSafeValue(row, ['สี'])}</p>
-                            <p class="mb-2"><strong>📍 พิกัด:</strong> ${getSafeValue(row, ['สถานที่', 'พิกัด'])}</p>
-                            <p class="mb-2"><strong>📅 วันที่เกิดเหตุ:</strong> ${getSafeValue(row, ['Timestamp', 'วันที่'])}</p>
-                        </div>
-                        <div class="p-3 bg-light rounded-4 mb-4"><h6 class="fw-bold small">รายละเอียด:</h6><p class="mb-0 text-muted small">${getSafeValue(row, ['รายละเอียด']) || '-'}</p></div>
-                        <div class="d-grid gap-2">
-                            <a href="tel:${getSafeValue(row, ['เบอร์ติดต่อ', 'โทร'])}" class="btn btn-call">📞 โทรติดต่อเจ้าของ</a>
-                            ${fbLink ? `<a href="${fbLink}" target="_blank" class="btn btn-fb">🔵 ดูโพสต์ Facebook</a>` : ''}
+                    <div class="col-lg-5">
+                        <div class="detail-body">
+                            <div class="d-flex justify-content-between align-items-start mb-3">
+                                <div>
+                                    <h2 class="fw-bold mb-0">${getSafeValue(row, ['ชื่อแมว'])}</h2>
+                                    <span class="badge ${getSafeValue(row, ['ประเภท']) === 'แมวหาย' ? 'bg-danger' : 'bg-primary'} rounded-pill mt-2 px-3">${getSafeValue(row, ['ประเภท'])}</span>
+                                </div>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            
+                            ${reward && reward !== '0' && reward !== '-' ? `<div class="reward-highlight">💰 สินน้ำใจตอบแทน: ฿${reward} บาท</div>` : ''}
+                            
+                            <div class="mb-4">
+                                <p class="mb-1"><strong>👫 เพศ:</strong> ${getSafeValue(row, ['เพศ'])} | <strong>🎨 สี:</strong> ${getSafeValue(row, ['สี'])}</p>
+                                <p class="mb-1"><strong>📍 พิกัด:</strong> ${getSafeValue(row, ['สถานที่', 'พิกัด'])}</p>
+                                <p class="mb-1 text-muted small"><strong>📅 วันที่ลงประกาศ:</strong> ${getSafeValue(row, ['Timestamp', 'วันที่'])}</p>
+                            </div>
+                            
+                            <div class="p-3 bg-light rounded-4 mb-4">
+                                <h6 class="fw-bold small">รายละเอียดเพิ่มเติม:</h6>
+                                <p class="mb-0 text-muted small">${getSafeValue(row, ['รายละเอียด']) || 'ไม่มีรายละเอียดเพิ่มเติม'}</p>
+                            </div>
+                            
+                            <div class="d-grid gap-2 mt-auto">
+                                <a href="tel:${getSafeValue(row, ['เบอร์ติดต่อ', 'โทร'])}" class="btn btn-call">📞 โทรติดต่อเจ้าของ</a>
+                                ${fbLink ? `<a href="${fbLink}" target="_blank" class="btn btn-fb">🔵 ดูโพสต์ Facebook</a>` : ''}
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>`;
+        
         const myModal = new bootstrap.Modal(document.getElementById('catDetailModal'));
         myModal.show();
     }
