@@ -23,21 +23,61 @@
     <div class="container text-center"><span class="navbar-brand mb-0 h1">🐱 ศูนย์แจ้งแมวหาย-แมวหลง</span></div>
 </nav>
 
-<div class="container mb-4 text-center">
-    <div class="btn-group gap-2 d-flex flex-wrap justify-content-center">
-        <!-- ปุ่มเดิม 3 ปุ่ม -->
-        <button class="btn btn-outline-danger active filter-btn" onclick="filterCats('ทั้งหมด', this)">ทั้งหมด</button>
-        <button class="btn btn-outline-danger filter-btn" onclick="filterCats('แมวหาย', this)">🚨 แมวหาย</button>
-        <button class="btn btn-outline-primary filter-btn" onclick="filterCats('แมวหลง', this)">🏠 แมวหลง</button>
+<div class="container mb-4">
+    <div class="d-flex flex-wrap justify-content-center gap-2">
+        <!-- ปุ่มกรอง: เน้นความเรียบง่าย คุมโทนสะอาดตา -->
+        <button class="btn filter-btn active" onclick="filterCats('ทั้งหมด', this)">ทั้งหมด</button>
+        <button class="btn filter-btn btn-outline-danger" onclick="filterCats('แมวหาย', this)">🚨 แมวหาย</button>
+        <button class="btn filter-btn btn-outline-primary" onclick="filterCats('แมวหลง', this)">🏠 แมวหลง</button>
         
-        <!-- ปุ่มใหม่ที่คุณต้องการ (เชื่อมลิงก์ Google Form แล้ว) -->
+        <!-- ปุ่มแจ้ง: เด่นที่สุดแต่ทรงเดียวกับเพื่อน -->
         <a href="https://docs.google.com/forms/d/e/1FAIpQLSfFT6EzdOULOLvGR8VZh0Xm9P78Ys_bJi9_MN1lYfZGGPBlRA/viewform?usp=dialog" 
            target="_blank" 
-           style="background: linear-gradient(45deg, #ff6b6b, #ff8e8e); color: white; border: none; border-radius: 20px; padding: 8px 25px; font-weight: bold; text-decoration: none; box-shadow: 0 4px 15px rgba(255, 107, 107, 0.3);">
+           class="btn btn-add-report">
            ➕ แจ้งแมวหาย/แมวหลง
         </a>
     </div>
 </div>
+
+<style>
+    /* ปรับปุ่มทั้งหมดให้เป็นทรงมน (Pill) และขนาดสมดุลกัน */
+    .filter-btn {
+        border-radius: 50px;
+        padding: 8px 20px;
+        font-weight: 600;
+        transition: all 0.2s ease;
+        border: 2px solid #dee2e6;
+        background-color: white;
+        color: #666;
+    }
+
+    /* สไตล์เมื่อกดเลือก (Active) */
+    .filter-btn.active {
+        background-color: #ff6b6b !important;
+        border-color: #ff6b6b !important;
+        color: white !important;
+        box-shadow: 0 4px 10px rgba(255, 107, 107, 0.2);
+    }
+
+    /* ปุ่มแจ้งหาย: ใช้สีเขียวเหนี่ยวทรัพย์ ให้ดูปลอดภัยและเป็นปุ่ม Action */
+    .btn-add-report {
+        background-color: #28a745;
+        color: white !important;
+        border-radius: 50px;
+        padding: 8px 25px;
+        font-weight: bold;
+        text-decoration: none;
+        border: 2px solid #28a745;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 12px rgba(40, 167, 69, 0.2);
+    }
+
+    .btn-add-report:hover {
+        background-color: #218838;
+        transform: translateY(-2px);
+        box-shadow: 0 6px 15px rgba(40, 167, 69, 0.3);
+    }
+</style>
 
 <div class="container">
     <div id="display-area" class="row row-cols-1 row-cols-md-3 g-4"></div>
