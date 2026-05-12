@@ -9,12 +9,26 @@
         @import url('https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;700&display=swap');
         body { background-color: #f4f7f6; font-family: 'Sarabun', sans-serif; }
         
-        /* Header: Midnight Blue & Teal (ปรับให้นุ่มนวลและอ่านง่ายขึ้น) */
+        /* Header: Midnight Blue & Teal */
         header { 
             background: linear-gradient(135deg, #2c3e50 0%, #4ca1af 100%); 
             border-radius: 0 0 40px 40px; 
             box-shadow: 0 10px 30px rgba(44, 62, 80, 0.2); 
         }
+
+        /* Search Bar & Input Styles */
+        .search-container { max-width: 600px; margin: -30px auto 30px; }
+        .search-input { 
+            border-radius: 50px; 
+            padding: 15px 25px 15px 50px; 
+            border: none; 
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1); 
+            font-size: 1.1rem;
+            background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="gray" class="bi bi-search" viewBox="0 0 16 16"><path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z"/></svg>');
+            background-repeat: no-repeat;
+            background-position: 20px center;
+        }
+        .search-input:focus { box-shadow: 0 5px 20px rgba(76, 161, 175, 0.3); outline: none; }
 
         /* Card Design */
         .cat-card { transition: transform 0.2s; border: none; border-radius: 15px; overflow: hidden; height: 100%; position: relative; cursor: pointer; box-shadow: 0 4px 10px rgba(0,0,0,0.05); background: white; }
@@ -40,7 +54,6 @@
         .modal-carousel-img { height: 450px; object-fit: contain; background-color: #000; width: 100%; }
         .text-truncate-multi { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; text-overflow: ellipsis; color: #6c757d; font-size: 0.9rem; }
         
-        /* แก้ไขสี Highlight "โอกาสรอด" ให้เด่นชัด */
         .highlight-text { color: #ffce00; font-weight: bold; text-decoration: underline; }
     </style>
 </head>
@@ -48,7 +61,7 @@
 
 <!-- ส่วนหัวข้อและคำคม -->
 <header class="py-5 text-center text-white mb-5">
-    <div class="container px-4">
+    <div class="container px-4 pb-4">
         <h1 class="display-5 fw-bold mb-3" style="text-shadow: 2px 2px 4px rgba(0,0,0,0.2);">🐱 ศูนย์แจ้งแมวหาย-แมวหลง</h1>
         <p class="lead mb-4 fw-light mx-auto" style="max-width: 850px; line-height: 1.8; font-size: 1.1rem; color: #f8f9fa;">
             "สังคมที่น่าอยู่เริ่มต้นที่การไม่นิ่งเฉยต่อชีวิตเล็กๆ การช่วยแชร์ข่าวสารแมวหายไม่ใช่แค่การช่วยสัตว์ แต่คือการหยิบยื่นน้ำใจให้เพื่อนมนุษย์ เพราะหนึ่งชีวิตที่หลงทางไป คือความทรมานของคนข้างหลัง"
@@ -60,6 +73,11 @@
         </div>
     </div>
 </header>
+
+<!-- ส่วนแถบค้นหา -->
+<div class="container search-container">
+    <input type="text" id="cat-search" class="form-control search-input" placeholder="ค้นหาชื่อแมว, สถานที่, หรือรายละเอียด..." onkeyup="combinedFilter()">
+</div>
 
 <!-- ส่วนปุ่มคัดกรองหลักและแจ้งข้อมูล -->
 <div class="container mb-4">
@@ -160,12 +178,26 @@
     function combinedFilter() {
         const gender = document.getElementById('filter-gender').value;
         const color = document.getElementById('filter-color').value;
+        const searchText = document.getElementById('cat-search').value.toLowerCase();
 
         const filteredData = allCatData.filter(row => {
-            const matchType = (currentType === 'ทั้งหมด' || getValue(row, ['ประเภท']) === currentType);
-            const matchGender = (gender === 'ทั้งหมด' || getValue(row, ['เพศ']) === gender);
-            const matchColor = (color === 'ทั้งหมด' || getValue(row, ['สี']).includes(color));
-            return matchType && matchGender && matchColor;
+            const typeVal = getValue(row, ['ประเภท']);
+            const genderVal = getValue(row, ['เพศ']);
+            const colorVal = getValue(row, ['สี']);
+            const nameVal = getValue(row, ['ชื่อแมว']).toLowerCase();
+            const locationVal = (getValue(row, ['สถานที่พบ/หาย']) || getValue(row, ['พิกัด'])).toLowerCase();
+            const descVal = getValue(row, ['รายละเอียด']).toLowerCase();
+
+            const matchType = (currentType === 'ทั้งหมด' || typeVal === currentType);
+            const matchGender = (gender === 'ทั้งหมด' || genderVal === gender);
+            const matchColor = (color === 'ทั้งหมด' || colorVal.includes(color));
+            
+            // ตรวจสอบช่องค้นหา (ค้นจาก ชื่อ, สถานที่, รายละเอียด)
+            const matchSearch = nameVal.includes(searchText) || 
+                                locationVal.includes(searchText) || 
+                                descVal.includes(searchText);
+
+            return matchType && matchGender && matchColor && matchSearch;
         });
 
         displayCats(filteredData);
@@ -176,7 +208,7 @@
         container.innerHTML = ''; 
 
         if (data.length === 0) {
-            container.innerHTML = '<div class="text-center w-100 py-5 text-muted"><h4>ไม่พบข้อมูลที่ค้นหา... ลองเลือกหมวดหมู่อื่นดูนะครับ</h4></div>';
+            container.innerHTML = '<div class="text-center w-100 py-5 text-muted"><h4>ไม่พบข้อมูลที่ค้นหา... ลองใช้คำค้นหาอื่นดูนะครับ</h4></div>';
             return;
         }
 
