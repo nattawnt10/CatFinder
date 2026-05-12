@@ -24,6 +24,8 @@
             background-color: #f0f2f5; 
             font-family: 'Sarabun', sans-serif; 
             color: #333;
+            /* ป้องกันอาการจอกระตุกเวลาเปิด Modal */
+            padding-right: 0 !important; 
         }
         
         header { 
@@ -103,50 +105,33 @@
             box-shadow: 0 6px 18px rgba(0,0,0,0.06);
             cursor: pointer;
         }
-        .cat-card:hover {
-            transform: translateY(-5px);
-        }
-        .card-img-container {
-            height: 220px;
-            overflow: hidden;
-            background-color: #f8f9fa;
-        }
-        .card-img-top { 
-            width: 100%;
-            height: 100%;
-            object-fit: cover; 
-        }
+        .cat-card:hover { transform: translateY(-5px); }
+        .card-img-container { height: 220px; overflow: hidden; background-color: #f8f9fa; }
+        .card-img-top { width: 100%; height: 100%; object-fit: cover; }
         
         .reward-tag { 
-            position: absolute; 
-            top: 10px; 
-            left: -30px; 
+            position: absolute; top: 10px; left: -30px; 
             background: linear-gradient(45deg, #f1c40f, #f39c12); 
-            color: #000; 
-            font-weight: 800; 
-            padding: 4px 35px; 
-            transform: rotate(-45deg); 
-            z-index: 20; 
-            font-size: 0.7rem; 
+            color: #000; font-weight: 800; padding: 4px 35px; 
+            transform: rotate(-45deg); z-index: 20; font-size: 0.7rem; 
             box-shadow: 0 2px 5px rgba(0,0,0,0.2);
         }
 
         .status-badge { 
-            position: absolute; 
-            top: 12px; 
-            right: 12px; 
-            padding: 6px 15px; 
-            border-radius: 50px; 
-            font-size: 0.75rem; 
-            z-index: 10; 
-            color: white; 
-            font-weight: bold;
+            position: absolute; top: 12px; right: 12px; 
+            padding: 6px 15px; border-radius: 50px; font-size: 0.75rem; 
+            z-index: 10; color: white; font-weight: bold;
         }
 
+        /* แก้ไข Modal ให้เลื่อนลงได้บนมือถือ */
+        .modal {
+            overflow-y: auto !important;
+        }
         .modal-content {
             border: none;
             border-radius: 30px;
             overflow: hidden;
+            height: auto;
         }
         .carousel-item img {
             height: 450px;
@@ -154,6 +139,7 @@
         }
         .detail-body {
             padding: 30px;
+            background: white;
         }
         .reward-highlight {
             background: #fff9e6;
@@ -170,8 +156,16 @@
         .btn-fb { background-color: var(--fb-blue); color: white !important; border-radius: 50px; padding: 12px; font-weight: bold; }
 
         @media (max-width: 768px) {
-            .carousel-item img { height: 300px; }
+            .carousel-item img { height: 320px; }
             .card-img-container { height: 160px; }
+            .detail-body { padding: 20px; }
+            /* บังคับให้ Modal สกロールได้ในตัวเมื่อจอเล็ก */
+            .modal-dialog {
+                margin: 10px;
+                display: flex;
+                align-items: center;
+                min-height: calc(100% - 20px);
+            }
         }
     </style>
 </head>
@@ -192,10 +186,10 @@
 
 <div class="container text-center filter-section">
     <div class="d-flex flex-wrap justify-content-center gap-2 mb-3">
-        <button class="btn btn-filter active" id="btn-all" onclick="filterType('ทั้งหมด', this)">ทั้งหมด</button>
+        <button class="btn btn-filter active" onclick="filterType('ทั้งหมด', this)">ทั้งหมด</button>
         <button class="btn btn-filter" onclick="filterType('แมวหาย', this)">🚨 แมวหาย</button>
         <button class="btn btn-filter" onclick="filterType('แมวหลง', this)">🏠 แมวหลง</button>
-        <a href="ใส่ลิงก์แบบฟอร์มของคุณตรงนี้" class="btn btn-report">➕ แจ้งข้อมูล</a>
+        <a href="https://docs.google.com/forms/d/e/1FAIpQLSfFT6EzdOULOLvGR8VZh0Xm9P78Ys_bJi9_MN1lYfZGGPBlRA/viewform" class="btn btn-report">➕ แจ้งข้อมูล</a>
     </div>
     
     <div class="row g-2 justify-content-center">
@@ -220,7 +214,7 @@
     <div id="display-area" class="row row-cols-2 row-cols-md-3 row-cols-lg-4 g-3"></div>
 </div>
 
-<!-- Modal -->
+<!-- Modal - เพิ่ม class modal-dialog-scrollable เพื่อให้เลื่อนดูเนื้อหาได้ -->
 <div class="modal fade" id="catDetailModal" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable">
         <div class="modal-content shadow-lg">
@@ -234,7 +228,7 @@
 
 <script>
     let allCatData = [];
-    let currentTypeFilter = 'ทั้งหมด'; // ตัวแปรเก็บค่าประเภทที่เลือก
+    let currentTypeFilter = 'ทั้งหมด';
 
     const csv_url = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQBat1WTJunSt9WRbR_w0q4uNMC_txGtfw6SRv2XlkdXtHxcNZafPzc9LNSN8Rn5xPXI717FFddww89/pub?gid=1934718548&single=true&output=csv';
 
@@ -256,22 +250,19 @@
         Papa.parse(csv_url, {
             download: true, header: true,
             complete: function(results) {
-                // เก็บข้อมูลและดักจับแถวที่ว่าง
                 allCatData = results.data.filter(row => getSafeValue(row, ['ชื่อแมว']) !== '');
                 displayCats(allCatData);
             }
         });
     }
 
-    // ฟังก์ชันเปลี่ยนปุ่ม Active และเก็บค่า Filter ประเภท
     function filterType(type, btn) {
         document.querySelectorAll('.btn-filter').forEach(b => b.classList.remove('active'));
         btn.classList.add('active');
         currentTypeFilter = type;
-        combinedFilter(); // เรียกใช้ฟังก์ชันรวมเพื่อให้ Filter ทำงานร่วมกัน
+        combinedFilter();
     }
 
-    // ฟังก์ชันค้นหารวม (Search + Type + Gender + Color)
     function combinedFilter() {
         const searchInput = document.getElementById('cat-search').value.toLowerCase().trim();
         const genderVal = document.getElementById('filter-gender').value;
@@ -285,33 +276,23 @@
             const rowLoc = getSafeValue(row, ['สถานที่', 'พิกัด', 'จังหวัด']).toLowerCase();
             const rowDetail = getSafeValue(row, ['รายละเอียด']).toLowerCase();
 
-            // ตรวจสอบเงื่อนไขแต่ละข้อ
             const matchType = (currentTypeFilter === 'ทั้งหมด' || rowType === currentTypeFilter);
             const matchGender = (genderVal === 'ทั้งหมด' || rowGender === genderVal);
             const matchColor = (colorVal === 'ทั้งหมด' || rowColor.includes(colorVal));
-            
-            // ตรวจสอบช่อง Search (หาจาก ชื่อ, พิกัด, สี, หรือรายละเอียด)
-            const matchSearch = searchInput === "" || 
-                                rowName.includes(searchInput) || 
-                                rowLoc.includes(searchInput) || 
-                                rowColor.toLowerCase().includes(searchInput) ||
-                                rowDetail.includes(searchInput);
+            const matchSearch = searchInput === "" || rowName.includes(searchInput) || rowLoc.includes(searchInput) || rowColor.toLowerCase().includes(searchInput) || rowDetail.includes(searchInput);
 
             return matchType && matchGender && matchColor && matchSearch;
         });
-
         displayCats(filtered);
     }
 
     function displayCats(data) {
         const container = document.getElementById('display-area');
         container.innerHTML = '';
-        
         if (data.length === 0) {
             container.innerHTML = '<div class="col-12 text-center py-5 text-muted"><h3>ไม่พบข้อมูลที่ค้นหา</h3></div>';
             return;
         }
-
         data.forEach((row) => {
             const type = getSafeValue(row, ['ประเภท']);
             const img = fixImageUrl(getSafeValue(row, ['รูปภาพที่ 1', 'รูปภาพ 1']));
@@ -364,6 +345,7 @@
                         <div class="mb-4 small">
                             <p class="mb-2"><strong>👫 เพศ:</strong> ${getSafeValue(row, ['เพศ'])} | <strong>🎨 สี:</strong> ${getSafeValue(row, ['สี'])}</p>
                             <p class="mb-2"><strong>📍 พิกัด:</strong> ${getSafeValue(row, ['สถานที่', 'พิกัด'])}</p>
+                            <p class="mb-2"><strong>📅 วันที่เกิดเหตุ:</strong> ${getSafeValue(row, ['Timestamp', 'วันที่'])}</p>
                         </div>
                         <div class="p-3 bg-light rounded-4 mb-4"><h6 class="fw-bold small">รายละเอียด:</h6><p class="mb-0 text-muted small">${getSafeValue(row, ['รายละเอียด']) || '-'}</p></div>
                         <div class="d-grid gap-2">
@@ -373,7 +355,8 @@
                     </div>
                 </div>
             </div>`;
-        new bootstrap.Modal(document.getElementById('catDetailModal')).show();
+        const myModal = new bootstrap.Modal(document.getElementById('catDetailModal'));
+        myModal.show();
     }
 
     window.addEventListener('DOMContentLoaded', init);
