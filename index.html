@@ -24,10 +24,18 @@
 </nav>
 
 <div class="container mb-4 text-center">
-    <div class="btn-group gap-2">
-        <button class="btn btn-outline-danger active" onclick="filterCats('ทั้งหมด', this)" style="border-radius:20px;">ทั้งหมด</button>
-        <button class="btn btn-outline-danger" onclick="filterCats('แมวหาย', this)" style="border-radius:20px;">🚨 แมวหาย</button>
-        <button class="btn btn-outline-primary" onclick="filterCats('แมวหลง', this)" style="border-radius:20px;">🏠 แมวหลง</button>
+    <div class="btn-group gap-2 d-flex flex-wrap justify-content-center">
+        <!-- ปุ่มเดิม 3 ปุ่ม -->
+        <button class="btn btn-outline-danger active filter-btn" onclick="filterCats('ทั้งหมด', this)">ทั้งหมด</button>
+        <button class="btn btn-outline-danger filter-btn" onclick="filterCats('แมวหาย', this)">🚨 แมวหาย</button>
+        <button class="btn btn-outline-primary filter-btn" onclick="filterCats('แมวหลง', this)">🏠 แมวหลง</button>
+        
+        <!-- ปุ่มใหม่ที่คุณต้องการ (เชื่อมลิงก์ Google Form แล้ว) -->
+        <a href="https://docs.google.com/forms/d/e/1FAIpQLSfFT6EzdOULOLvGR8VZh0Xm9P78Ys_bJi9_MN1lYfZGGPBlRA/viewform?usp=dialog" 
+           target="_blank" 
+           style="background: linear-gradient(45deg, #ff6b6b, #ff8e8e); color: white; border: none; border-radius: 20px; padding: 8px 25px; font-weight: bold; text-decoration: none; box-shadow: 0 4px 15px rgba(255, 107, 107, 0.3);">
+           ➕ แจ้งแมวหาย/แมวหลง
+        </a>
     </div>
 </div>
 
