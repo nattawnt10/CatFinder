@@ -9,7 +9,7 @@
         @import url('https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;700&display=swap');
         body { background-color: #f4f7f6; font-family: 'Sarabun', sans-serif; }
         
-        /* Header แบบใหม่: สี Midnight Blue ไล่เฉด สบายตา */
+        /* Header: Midnight Blue & Teal (ปรับให้นุ่มนวลและอ่านง่ายขึ้น) */
         header { 
             background: linear-gradient(135deg, #2c3e50 0%, #4ca1af 100%); 
             border-radius: 0 0 40px 40px; 
@@ -39,6 +39,9 @@
         .badge-type { position: absolute; top: 10px; right: 10px; padding: 8px 15px; border-radius: 20px; font-size: 0.8rem; z-index: 10; color: white; font-weight: bold; }
         .modal-carousel-img { height: 450px; object-fit: contain; background-color: #000; width: 100%; }
         .text-truncate-multi { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; text-overflow: ellipsis; color: #6c757d; font-size: 0.9rem; }
+        
+        /* แก้ไขสี Highlight "โอกาสรอด" ให้เด่นชัด */
+        .highlight-text { color: #ffce00; font-weight: bold; text-decoration: underline; }
     </style>
 </head>
 <body>
@@ -47,12 +50,12 @@
 <header class="py-5 text-center text-white mb-5">
     <div class="container px-4">
         <h1 class="display-5 fw-bold mb-3" style="text-shadow: 2px 2px 4px rgba(0,0,0,0.2);">🐱 ศูนย์แจ้งแมวหาย-แมวหลง</h1>
-        <p class="lead mb-4 fw-light mx-auto" style="max-width: 850px; line-height: 1.8; font-size: 1.1rem; color: #f0f0f0;">
+        <p class="lead mb-4 fw-light mx-auto" style="max-width: 850px; line-height: 1.8; font-size: 1.1rem; color: #f8f9fa;">
             "สังคมที่น่าอยู่เริ่มต้นที่การไม่นิ่งเฉยต่อชีวิตเล็กๆ การช่วยแชร์ข่าวสารแมวหายไม่ใช่แค่การช่วยสัตว์ แต่คือการหยิบยื่นน้ำใจให้เพื่อนมนุษย์ เพราะหนึ่งชีวิตที่หลงทางไป คือความทรมานของคนข้างหลัง"
         </p>
         <div class="p-3 bg-white bg-opacity-10 rounded-4 d-inline-block shadow-sm" style="border: 1px solid rgba(255,255,255,0.2);">
             <p class="mb-0 fw-light">
-                สำหรับเราเขาอาจเป็นแค่แมวตัวหนึ่ง แต่สำหรับเขาเราคือโลกทั้งใบ... มาร่วมสร้างปาฏิหาริย์ด้วยการเป็นหูเป็นตา เพราะทุกการส่งต่อคือ <strong class="text-info">"โอกาสรอด"</strong>
+                สำหรับเราเขาอาจเป็นแค่แมวตัวหนึ่ง แต่สำหรับเขาเราคือโลกทั้งใบ... มาร่วมสร้างปาฏิหาริย์ด้วยการเป็นหูเป็นตา เพราะทุกการส่งต่อคือ <strong class="highlight-text">"โอกาสรอด"</strong>
             </p>
         </div>
     </div>
