@@ -104,6 +104,19 @@
             .modal-dialog { margin: 10px; }
             .detail-body { padding: 20px; }
         }
+        /* ปรับสีไอคอนลูกศรให้เป็นสีดำเข้ม */
+.carousel-control-prev-icon,
+.carousel-control-next-icon {
+    background-color: rgba(0, 0, 0, 0.5); /* เพิ่มพื้นหลังวงกลมสีดำจางๆ ให้ลูกศรเด่นขึ้น */
+    border-radius: 50%;
+    background-size: 60% 60%; /* ปรับขนาดหัวลูกศร */
+}
+
+/* ถ้าต้องการเปลี่ยนสีตัวลูกศรโดยตรง (ใช้ Filter) */
+.carousel-control-prev-icon,
+.carousel-control-next-icon {
+    filter: invert(1) grayscale(100%) brightness(0); /* บังคับเป็นสีดำสนิท */
+}
     </style>
 </head>
 <body>
@@ -319,7 +332,7 @@
 
                             <div class="d-grid gap-2">
                                 <a href="tel:${getSafeValue(row, ['เบอร์ติดต่อ', 'โทร'])}" class="btn-call">📞 โทรติดต่อเจ้าของ</a>
-                                ${fbLink ? `<a href="${fbLink}" target="_blank" class="btn-fb">🔵 ดูโพสต์ Facebook</a>` : ''}
+                                ${fbLink ? `<a href="${fbLink}" target="_blank" class="btn-fb">🔵 Facebook</a>` : ''}
                             </div>
                         </div>
                     </div>
